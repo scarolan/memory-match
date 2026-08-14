@@ -32,22 +32,34 @@ import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
 
 class MainActivity : ComponentActivity() {
+    private lateinit var soundManager: SoundManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        soundManager = SoundManager(this)
         setContent {
             MaterialTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {
-                    MemoryMatchGame()
+                    MemoryMatchGame(playSound = soundManager::play)
                 }
             }
         }
     }
+
+    override fun onDestroy() {
+        soundManager.release()
+        super.onDestroy()
+    }
 }
 
 @Composable
-private fun MemoryMatchGame() {
+private fun MemoryMatchGame(playSound: (SoundCue) -> Unit) {
     var state by remember { mutableStateOf(GameEngine.createInitialState()) }
-    val dispatch = { event: GameEvent -> state = GameEngine.reduce(state, event) }
+    val dispatch: (GameEvent) -> Unit = { event: GameEvent ->
+        val oldState = state
+        state = GameEngine.reduce(state, event)
+        detectSoundCue(oldState, state)?.let(playSound)
+    }
 
     LaunchedEffect(state.pendingHideIndices) {
         if (state.pendingHideIndices.isNotEmpty()) {
