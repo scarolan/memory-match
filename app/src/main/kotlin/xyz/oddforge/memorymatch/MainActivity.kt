@@ -75,8 +75,6 @@ private fun MemoryMatchGame(playSound: (SoundCue) -> Unit) {
         Text("Memory Match", fontSize = 24.sp)
         Text("Moves: ${state.movesCount}", fontSize = 16.sp, modifier = Modifier.padding(bottom = 16.dp))
 
-        ThemeSelector(currentTheme = state.theme, onThemeSelected = { dispatch(GameEvent.ChangeTheme(it)) })
-
         if (state.isGameOver) {
             Text("You Win! ${state.movesCount} moves", fontSize = 20.sp, modifier = Modifier.padding(8.dp))
             Button(onClick = { dispatch(GameEvent.ResetGame) }) {
@@ -85,6 +83,8 @@ private fun MemoryMatchGame(playSound: (SoundCue) -> Unit) {
         }
 
         CardGrid(state, dispatch)
+
+        ThemeSelector(currentTheme = state.theme, onThemeSelected = { dispatch(GameEvent.ChangeTheme(it)) })
     }
 }
 
