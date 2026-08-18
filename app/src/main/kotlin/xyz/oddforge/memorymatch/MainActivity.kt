@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -69,10 +70,16 @@ private fun MemoryMatchGame(playSound: (SoundCue) -> Unit) {
     }
 
     Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .statusBarsPadding()
+            .padding(start = 16.dp, top = 32.dp, end = 16.dp, bottom = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Memory Match", fontSize = 24.sp)
+        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+            Text("Memory", fontSize = 24.sp)
+            Text("Match", fontSize = 24.sp)
+        }
         Text("Moves: ${state.movesCount}", fontSize = 16.sp, modifier = Modifier.padding(bottom = 16.dp))
 
         if (state.isGameOver) {
