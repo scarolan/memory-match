@@ -245,4 +245,56 @@ class GameEngineTest {
         assertNull(original.firstFlippedIndex)
         assertEquals(0, original.movesCount)
     }
+
+    // --- Tile themes ---
+
+    @Test
+    fun createBoard_foodTheme_usesFoodEmoji() {
+        val board = GameEngine.createBoard(GameEngine.TileTheme.FOOD)
+        assertEquals(16, board.size)
+        val grouped = board.groupBy { it.emoji }
+        assertEquals(8, grouped.size)
+        assertTrue(grouped.all { it.value.size == 2 })
+        assertTrue(board.all { it.emoji in listOf("🍎", "🍊", "🍋", "🍇", "🍓", "🍒", "🍑", "🥝") })
+    }
+
+    @Test
+    fun createBoard_spaceTheme_usesSpaceEmoji() {
+        val board = GameEngine.createBoard(GameEngine.TileTheme.SPACE)
+        assertEquals(16, board.size)
+        val grouped = board.groupBy { it.emoji }
+        assertEquals(8, grouped.size)
+        assertTrue(grouped.all { it.value.size == 2 })
+        assertTrue(board.all { it.emoji in listOf("🚀", "🌙", "⭐", "🪐", "☄️", "🛸", "🌍", "🔭") })
+    }
+
+    @Test
+    fun createInitialState_preservesTheme() {
+        val state = GameEngine.createInitialState(GameEngine.TileTheme.SPACE)
+        assertEquals(GameEngine.TileTheme.SPACE, state.theme)
+    }
+
+    @Test
+    fun resetGame_preservesCurrentTheme() {
+        val state = GameEngine.createInitialState(GameEngine.TileTheme.FOOD)
+        val reset = GameEngine.reduce(state, GameEvent.ResetGame)
+        assertEquals(GameEngine.TileTheme.FOOD, reset.theme)
+    }
+
+    @Test
+    fun changeTheme_resetsBoard() {
+        var state = GameEngine.createInitialState(GameEngine.TileTheme.ANIMALS)
+        state = GameEngine.reduce(state, GameEvent.CardTapped(0))
+        state = GameEngine.reduce(state, GameEvent.ChangeTheme(GameEngine.TileTheme.SPACE))
+        assertEquals(GameEngine.TileTheme.SPACE, state.theme)
+        assertEquals(0, state.movesCount)
+        assertFalse(state.isGameOver)
+        assertTrue(state.cards.none { it.isFaceUp })
+    }
+
+    @Test
+    fun defaultTheme_isAnimals() {
+        val state = GameEngine.createInitialState()
+        assertEquals(GameEngine.TileTheme.ANIMALS, state.theme)
+    }
 }

@@ -75,6 +75,8 @@ private fun MemoryMatchGame(playSound: (SoundCue) -> Unit) {
         Text("Memory Match", fontSize = 24.sp)
         Text("Moves: ${state.movesCount}", fontSize = 16.sp, modifier = Modifier.padding(bottom = 16.dp))
 
+        ThemeSelector(currentTheme = state.theme, onThemeSelected = { dispatch(GameEvent.ChangeTheme(it)) })
+
         if (state.isGameOver) {
             Text("You Win! ${state.movesCount} moves", fontSize = 20.sp, modifier = Modifier.padding(8.dp))
             Button(onClick = { dispatch(GameEvent.ResetGame) }) {
@@ -96,6 +98,26 @@ private fun CardGrid(state: GameState, dispatch: (GameEvent) -> Unit) {
                     val card = state.cards[index]
                     CardCell(card, onClick = { dispatch(GameEvent.CardTapped(index)) }, modifier = Modifier.weight(1f))
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ThemeSelector(
+    currentTheme: GameEngine.TileTheme,
+    onThemeSelected: (GameEngine.TileTheme) -> Unit
+) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier.padding(bottom = 12.dp)
+    ) {
+        GameEngine.TileTheme.entries.forEach { theme ->
+            Button(
+                onClick = { onThemeSelected(theme) },
+                enabled = theme != currentTheme
+            ) {
+                Text(theme.label)
             }
         }
     }

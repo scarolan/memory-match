@@ -2,7 +2,11 @@ package xyz.oddforge.memorymatch
 
 object GameEngine {
 
-    private val EMOJIS = listOf("🐶", "🐱", "🐸", "🦊", "🐼", "🐨", "🦁", "🐯")
+    enum class TileTheme(val label: String, val emojis: List<String>) {
+        ANIMALS("Animals", listOf("🐶", "🐱", "🐸", "🦊", "🐼", "🐨", "🦁", "🐯")),
+        FOOD("Food", listOf("🍎", "🍊", "🍋", "🍇", "🍓", "🍒", "🍑", "🥝")),
+        SPACE("Space", listOf("🚀", "🌙", "⭐", "🪐", "☄️", "🛸", "🌍", "🔭")),
+    }
 
     fun generatePairs(count: Int): List<Int> {
         require(count in 1..18) { "Pair count must be between 1 and 18" }
@@ -10,19 +14,21 @@ object GameEngine {
         return (ids + ids).shuffled()
     }
 
-    fun createBoard(): List<Card> {
-        val pairs = (EMOJIS + EMOJIS).shuffled()
+    fun createBoard(theme: TileTheme = TileTheme.ANIMALS): List<Card> {
+        val pairs = (theme.emojis + theme.emojis).shuffled()
         return pairs.mapIndexed { index, emoji ->
             Card(id = index, emoji = emoji)
         }
     }
 
-    fun createInitialState(): GameState = GameState(cards = createBoard())
+    fun createInitialState(theme: TileTheme = TileTheme.ANIMALS): GameState =
+        GameState(cards = createBoard(theme), theme = theme)
 
     fun reduce(state: GameState, event: GameEvent): GameState = when (event) {
         is GameEvent.CardTapped -> handleCardTapped(state, event.index)
-        is GameEvent.ResetGame -> createInitialState()
+        is GameEvent.ResetGame -> createInitialState(state.theme)
         is GameEvent.HideUnmatched -> hideUnmatched(state)
+        is GameEvent.ChangeTheme -> createInitialState(event.theme)
     }
 
     private fun handleCardTapped(state: GameState, index: Int): GameState {

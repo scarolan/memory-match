@@ -5,5 +5,6 @@ data class GameState(
     val movesCount: Int = 0,
     val firstFlippedIndex: Int? = null,
     val pendingHideIndices: List<Int> = emptyList(),
-    val isGameOver: Boolean = false
+    val isGameOver: Boolean = false,
+    val theme: GameEngine.TileTheme = GameEngine.TileTheme.ANIMALS
 )
