@@ -76,10 +76,7 @@ private fun MemoryMatchGame(playSound: (SoundCue) -> Unit) {
             .padding(start = 16.dp, top = 32.dp, end = 16.dp, bottom = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-            Text("Memory", fontSize = 24.sp)
-            Text("Match", fontSize = 24.sp)
-        }
+        Text("Memory Match", fontSize = 24.sp)
         Text("Moves: ${state.movesCount}", fontSize = 16.sp, modifier = Modifier.padding(bottom = 16.dp))
 
         if (state.isGameOver) {
