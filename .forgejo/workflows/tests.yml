@@ -1,0 +1,16 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: android
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run unit tests
+        run: ~/gradle-8.9/bin/gradle test
+        env:
+          ANDROID_HOME: /home/scarolan/android-sdk
